@@ -1,0 +1,58 @@
+{%  extends "webapp/base.html" %}
+
+{% block content %}
+
+    <h3> {{user}}: Dashboard </h3>
+
+    <hr>
+
+    <a class="btn btn-primary btn-sm" href="{% url 'customer-create' %}"> Create new customer &nbsp; <i class="fa fa-user-plus" aria-hidden="true"></i></a>
+
+    <hr>
+    <br>
+    <br>
+
+    <table class="table table-light table-striped table-hover table-bordered">
+        <thead class='table-info'>
+            <tr>
+                <th scope='col'>Customer ID</th>
+                <th scope='col'>First Name</th>
+                <th scope='col'>Last Name</th>
+                <th scope='col'>Date of Birth</th>
+                <th scope='col'>Gender</th>
+                <th scope='col'>Employment Status</th>
+                <th scope='col'>Creation Date</th>
+                <th scope='col'>Last Updated</th>
+                <th scope='col'>View</th>
+
+            </tr>
+        </thead>
+
+        <tbody>
+
+        {% if customer_data %}
+
+        {% for customer in customer_data %}
+
+            <tr>
+                <td> {{customer.id}} </td>
+                <td> {{customer.customer_first_name}} </td>
+                <td> {{customer.customer_last_name}} </td>
+                <td> {{customer.customer_date_of_birth}} </td>
+                <td> {{customer.customer_gender}} </td>
+                <td> {{customer.customer_employment_status}} </td>
+                <td> {{customer.customer_created}} </td>
+                <td> {{customer.customer_updated}} </td>
+                <td> <a class="btn btn-primary btn-sm" href="{% url 'customer-read' customer.id %}"> View &nbsp; <i class="fa fa-search" aria-hidden="true"></i></a> </td>
+
+            </tr>
+
+        {% endfor %}
+
+        {% endif %}
+
+        </tbody>
+
+    </table>
+
+{% endblock %}

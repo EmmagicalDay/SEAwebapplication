@@ -1,0 +1,43 @@
+{% extends 'webapp/base.html' %}
+
+{% block content %}
+
+<a href="{% url 'customer-read' customer.id %}" class='btn btn-secondary'><i class="fa fa-arrow-left" aria-hidden="true"></i>&nbsp; Return to Customer Details</a>
+<a href="{% url 'employment-create' customer.id %}" class='btn btn-primary'>Add Employment Details &nbsp; <i class="fa fa-plus-square" aria-hidden="true"></i></a>
+<br><br>
+{% load static %}
+
+<link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+
+<h1>Employment Details</h1>
+<h5>{{ customer.customer_last_name|upper }} {{ customer.customer_first_name }}</h5>
+
+<hr>
+
+{% for employment in employment_data %}
+    <div class="card mb-3" style="width: 18rem;">
+        <div class="card-body">
+            <h5 class="card-title">{{ employment.employment_employer }}</h5>
+            <p class="card-text">
+                <strong>Industry:</strong> {{ employment.get_employment_industry_display }}<br>
+                <strong>Job Title:</strong> {{ employment.get_employment_job_title_display }}<br>
+                <strong>Salary:</strong> {{ employment.employment_salary }}<br>
+                <strong>Pension Status:</strong> {{ employment.get_employment_pension_status_display }}<br>
+                <strong>Created:</strong> {{ employment.employment_created }}<br>
+                <strong>Updated:</strong> {{ employment.employment_updated }}
+            </p>
+            <form method="POST" action="{% url 'employment-delete' employment.employment_id %}" onsubmit="return confirm('Are you sure you want to delete this employment?');">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger">Delete</button>
+            </form>
+        </div>
+    </div>
+{% empty %}
+    <div class="card" style="width: 18rem;">
+        <div class="card-body">
+            <p class="card-text">No employment details available.</p>
+        </div>
+    </div>
+{% endfor %}
+
+{% endblock %}

@@ -1,0 +1,26 @@
+{% extends "webapp/base.html" %}
+{% load crispy_forms_tags %}
+{% block content %}
+
+    <body>
+
+        <div class="container bg-light shadow-md p-5 .form-style">
+
+            <h3>Create new customer</h3>
+            <h6>Complete form with customer information</h6>
+
+            <hr>
+            <br>
+
+            <form method="POST" autocomplete="off">
+                {% csrf_token %}
+                {{form|crispy}}
+                <br>
+                <button type="submit" class="btn btn-primary w-125 btn-block p-2">Create customer &nbsp; <i class="fa fa-plus-square" aria-hidden="true"></i></button>
+            </form>
+
+        </div>
+
+    </body>
+
+{% endblock %}

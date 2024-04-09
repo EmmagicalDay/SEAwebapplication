@@ -1,0 +1,32 @@
+{% extends "webapp/base.html" %}
+{% load crispy_forms_tags %}
+{% block content %}
+
+    <body>
+        <a href="{% url 'user-dashboard' %}" class='btn btn-secondary'><i class="fa fa-arrow-left" aria-hidden="true"></i>&nbsp; Return to Dashboard</a>
+        <br>
+        <br>
+        <div class="container bg-light shadow-md p-5 .form-style">
+
+            <h3>Update customer record</h3>
+            <h6>Edit form with updated customer information</h6>
+
+            <hr>
+            <br>
+
+            <form method="POST" autocomplete="off">
+                {% csrf_token %}
+                {{form|crispy}}
+                <br>
+                
+                <button type="submit" class="btn btn-primary w-125 btn-block p-2">Update customer&nbsp; <i class="fa fa-pencil-square-o" aria-hidden="true"></i></button>
+                
+            </form>
+
+        </div>
+
+    </body>
+
+
+
+{% endblock %}

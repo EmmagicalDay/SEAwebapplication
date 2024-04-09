@@ -1,0 +1,38 @@
+{% extends 'webapp/base.html'%}
+
+{% block content %}
+
+<a href="{% url 'user-dashboard' %}" class='btn btn-secondary'><i class="fa fa-arrow-left" aria-hidden="true"></i>&nbsp; Return to Dashboard</a>
+
+<br>
+<br>
+
+<div class='card'>
+    <div class='card-body'>
+        <h5><strong>
+            {{ customer.customer_last_name|upper }}
+            {{ customer.customer_first_name }}
+        </strong></h5>
+        <hr>
+        <p><strong>Customer ID:</strong> {{ customer.id }}</p>
+        <p><strong>Date of Birth:</strong> {{ customer.customer_date_of_birth }}</p>
+        <p><strong>Gender:</strong> {{ customer.customer_gender }}</p>
+        <p><strong>Employment Status:</strong> {{ customer.customer_employment_status }}</p>
+        <p><strong>Customer creation date:</strong> {{ customer.customer_created }}</p>
+    </div>
+
+</div>
+
+<br>
+
+
+
+&nbsp;
+<a href="{% url 'employment-read' customer.id %}" class='btn btn-info'>View Employment Details &nbsp; <i class="fa fa-eye" aria-hidden="true"></i></a>
+&nbsp;
+<a href="{% url 'customer-update' customer.id %}" class='btn btn-warning'>Update Customer Details &nbsp; <i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
+&nbsp;
+<a href="{% url 'customer-delete' customer.id %}" class='btn btn-danger' onclick="return confirm('Are you sure you want to delete this customer?');">Delete Customer &nbsp; <i class="fa fa-minus-square" aria-hidden="true"></i></a>
+&nbsp;
+
+{% endblock %}
