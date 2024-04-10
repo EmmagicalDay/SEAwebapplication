@@ -3,6 +3,8 @@ Welcome to the SEA Customer Management System (CMS) README! This application was
 
 The primary objective of this CMS is to facilitate efficient management of customer data. It allows users, categorized into superusers and regular users, to interact with the system and perform various actions on customer and employment records.
 
+The app can be access online via https://emlowood-sea-a10f0876665d.herokuapp.com/
+
 ## Features
 User Access Levels: Two types of access are available: superuser and regular user, each with distinct privileges.
 CRUD Operations: Superusers can perform Create, Read, Update, and Delete operations on both customer and employment records. Regular users can perform Create, Read, Update on customer records and Create, Read, Delete on employment records.
