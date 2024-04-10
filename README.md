@@ -1,4 +1,4 @@
-## SEA
+# SEA
 Welcome to the SEA Customer Management System (CMS) README! This application was developed as part of a Software Engineering and Agile assignment. It serves as a basic yet robust system for managing customer information, focusing on customer profiles and their employment details. The system operates on a one-to-many relationship model, linking customer profiles to their respective employment profiles via a unique customer ID.
 
 The primary objective of this CMS is to facilitate efficient management of customer data. It allows users, categorized into superusers and regular users, to interact with the system and perform various actions on customer and employment records.
@@ -10,8 +10,7 @@ Unit Tests: Comprehensive unit tests have been developed to ensure the reliabili
 Frontend Validation: Manual validation has been completed on the frontend to enhance data integrity and user experience.
 Technologies Used: The application is built using VS Code as the development environment and Django framework. Default Django apps such as UserCreationForms and authentication mechanisms are utilized. Additionally, Django Crispy Forms, Bootstrap, and Font Awesome for icons are integrated into the frontend. The default SQLite database is employed for data storage, and Heroku is utilized for deployment.
 
-## Note on Naming Conventions
-
+### Note on Naming Conventions
 In this project, the Django model classes are named using snake_case (all lowercase with underscores between words) instead of the typical CamelCase used in Python. This was an early design decision and changing it now could potentially break the code.
 
 While this doesn't affect the functionality of the application, it's important to be aware of this if you're contributing to the project or using it as a reference. When referring to these models in your code, make sure to use the correct case.
@@ -20,7 +19,7 @@ For example, to import the `customer` model, you would use:
 
 ```python
 from .models import customer
-
+```
 
 ## Setup and Installation
 
@@ -93,6 +92,7 @@ To create a superuser for the Django admin interface, follow these steps:
 4. You will be prompted to enter a username, email address, and password for the superuser. Enter the information as prompted.
 
 5. Once the superuser is created, you can access the Django admin interface by starting the server with `python manage.py runserver` and navigating to `http://localhost:8000/admin` in your web browser.
+
 
 ## Existing Superuser details
 Username: admin
