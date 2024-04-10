@@ -105,7 +105,30 @@ Password: seatemp123#
 Username: usertest1
 Password: SEAtest2024
 
-   
+## Testing
+
+The tests folder houses files for unit tests, as an example, `test_forms.py` file contains unit tests for the forms in the web application. These tests are designed to ensure that the forms behave as expected when given valid, invalid, and missing data.
+
+### Test Cases
+
+- **Test with valid data:** Each form has a test case where all fields are filled with valid data. The test asserts that the form is valid and doesn't have any errors.
+
+- **Test with no data:** Each form has a test case where no data is provided. The test asserts that the form is invalid and counts the number of errors to ensure it matches the number of required fields.
+
+- **Test with missing data on one field:** The `CreateEmploymentForm` has a test case where one field is left empty. The test asserts that the form is invalid and has one error.
+
+- **Test with incorrect data type:** The `CreateEmploymentForm` has a test case where the `employment_salary` field is filled with a string instead of a number. The test asserts that the form is invalid and has one error.
+
+### Running the Tests
+
+To run the tests, navigate to the project directory in your terminal and run the following command:
+
+```bash
+python manage.py test webapp
+```
+
+Similar unit tests have been created for models, urls and views.
+
 
 ## Contributing
 
