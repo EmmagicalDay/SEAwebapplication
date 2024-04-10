@@ -24,6 +24,24 @@ For example, to import the `customer` model, you would use:
 from .models import customer
 ```
 
+## ERD
+```
+             +-------------------+              +----------------------+
+             |      customer     |              |   employment_details |
+             +-------------------+              +----------------------+
+             | id (PK)           |              | employment_id (PK)   |
+             | customer_first_name|              | customer (FK)        |
+             | customer_last_name|              | employment_employer  |
+             | customer_date_of_birth|           | employment_industry  |
+             | customer_gender   |              | employment_job_title |
+             | customer_employment_status|       | employment_salary    |
+             | customer_created  |              | employment_pension_status|
+             | customer_updated  |              | employment_created   |
+             |                   |<--------------| employment_updated   |
+             +-------------------+              +----------------------+
+                           1                                M
+```
+
 ## Setup and Installation
 
 1. Clone the repository:
