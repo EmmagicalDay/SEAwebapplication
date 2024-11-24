@@ -1,3 +1,5 @@
+Updating readme for a test
+
 # SEA
 Welcome to the SEA Customer Management System (CMS) README! This application was developed as part of a Software Engineering and Agile assignment. It serves as a basic yet robust system for managing customer information, focusing on customer profiles and their employment details. The system operates on a one-to-many relationship model, linking customer profiles to their respective employment profiles via a unique customer ID.
 
