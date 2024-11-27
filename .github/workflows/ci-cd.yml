@@ -26,9 +26,9 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
 
-    - name: Set up Django settings
+    - name: Set environment variables
       run: |
-        export DJANGO_SETTINGS_MODULE=sea.settings
+        echo "DJANGO_SETTINGS_MODULE=sea.settings" >> $GITHUB_ENV
 
     - name: Print environment variables
       run: |
