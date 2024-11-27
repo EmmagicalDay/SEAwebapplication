@@ -31,5 +31,7 @@ jobs:
         export DJANGO_SETTINGS_MODULE=sea.settings
 
     - name: Run tests
+      env:
+        DJANGO_SETTINGS_MODULE: sea.settings
       run: |
-        python -m unittest discover -s webapp/tests
+        python manage.py test webapp.tests
