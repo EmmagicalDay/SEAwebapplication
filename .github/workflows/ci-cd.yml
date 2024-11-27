@@ -28,4 +28,4 @@ jobs:
 
     - name: Run tests
       run: |
-        python manage.py test webapp.tests
+        python -m unittest discover -s webapp/tests
