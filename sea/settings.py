@@ -140,6 +140,8 @@ STATICFILES_DIRS = [
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+# Test runner
+TEST_RUNNER = 'django.test.runner.DiscoverRunner'
 
 
 
