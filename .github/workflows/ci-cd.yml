@@ -26,3 +26,14 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
 
+    - name: Set environment variables
+      run: |
+        echo "DJANGO_SETTINGS_MODULE=sea.settings" >> $GITHUB_ENV
+
+    - name: Print environment variables
+      run: |
+        printenv
+
+    - name: Run tests
+      run: |
+        pytest
