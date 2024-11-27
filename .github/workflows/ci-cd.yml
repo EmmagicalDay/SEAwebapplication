@@ -35,6 +35,7 @@ jobs:
         printenv
 
     - name: Run tests
+      env:
+        DJANGO_SETTINGS_MODULE: sea.settings
       run: |
-        export DJANGO_SETTINGS_MODULE=sea.settings
-        python -m unittest discover -s webapp/tests
+        python manage.py test webapp.tests
