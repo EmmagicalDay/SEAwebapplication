@@ -30,6 +30,10 @@ jobs:
       run: |
         export DJANGO_SETTINGS_MODULE=sea.settings
 
+    - name: Print environment variables
+      run: |
+        printenv
+
     - name: Run tests
       env:
         DJANGO_SETTINGS_MODULE: sea.settings
