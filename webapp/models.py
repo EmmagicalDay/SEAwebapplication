@@ -19,6 +19,15 @@ class customer(models.Model):
         ('Leaver', 'Leaver')
     ]
 
+    def clean(self):
+        # Validate the gender choice
+        if self.customer_gender not in dict(self.GENDER_CHOICES):
+            raise ValueError(f"Invalid gender: {self.customer_gender}")
+
+        # Validate the employment status choice
+        if self.customer_employment_status not in dict(self.EMPLOYMENT_STATUS_CHOICES):
+            raise ValueError(f"Invalid employment status: {self.customer_employment_status}")
+    
     #customer_id = models.AutoField(primary_key=True)
     customer_first_name = models.CharField(max_length=100)
     customer_last_name = models.CharField(max_length=100)
@@ -27,7 +36,8 @@ class customer(models.Model):
     customer_employment_status = models.CharField(max_length=15, choices=EMPLOYMENT_STATUS_CHOICES, default='A')
     customer_created = models.DateTimeField(auto_now_add=True)
     customer_updated = models.DateTimeField(auto_now=True)
-    
+
+
 
     def __str__(self):
         return self.customer_first_name + ' ' + self.customer_last_name
@@ -76,6 +86,19 @@ class employment_details(models.Model):
         ('N', 'Not Enrolled')
     ]
 
+    def clean(self):
+        # Validate the industry choice
+        if self.employment_industry not in dict(self.INDUSTRY_CHOICES):
+            raise ValueError(f"Invalid industry: {self.employment_industry}")
+        
+        # Validate the job title choice
+        if self.employment_job_title not in dict(self.JOB_TITLE_CHOICES):
+            raise ValueError(f"Invalid job title: {self.employment_job_title}")
+        
+        # Validate the pension status choice
+        if self.employment_pension_status not in dict(self.PENSION_STATUS_CHOICES):
+            raise ValueError(f"Invalid pension status: {self.employment_pension_status}")
+    
     employment_id = models.AutoField(primary_key=True)
     customer = models.ForeignKey(customer, on_delete=models.CASCADE)
     employment_employer = models.CharField(max_length=100)
@@ -85,4 +108,6 @@ class employment_details(models.Model):
     employment_pension_status = models.CharField(max_length=1, choices=PENSION_STATUS_CHOICES, default='N')
     employment_created = models.DateTimeField(auto_now_add=True)
     employment_updated = models.DateTimeField(auto_now=True)
+
+
 
