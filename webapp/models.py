@@ -106,5 +106,5 @@ class employment_details(models.Model):
             raise ValidationError(f"Invalid pension status: {self.employment_pension_status}")
         if not self.employment_employer:
             raise ValidationError("Employer is required.")
-        if self.employment_salary <= 0:
+        if self.employment_salary is None or self.employment_salary <= 0:
             raise ValidationError("Salary must be a positive number.")
