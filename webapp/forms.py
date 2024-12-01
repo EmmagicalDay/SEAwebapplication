@@ -37,9 +37,9 @@ class UpdateCustomerForm(forms.ModelForm):
 # Create customer employment details
 class CreateEmploymentForm(forms.ModelForm):
     
-     class Meta:
-         model = employment_details
-         fields = ['employment_employer', 'employment_industry', 'employment_job_title', 'employment_salary', 'employment_pension_status']
+    class Meta:
+        model = employment_details
+        fields = ['employment_employer', 'employment_industry', 'employment_job_title', 'employment_salary', 'employment_pension_status']
 
     def clean_employment_salary(self):
         salary = self.cleaned_data.get('employment_salary')
