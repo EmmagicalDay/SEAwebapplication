@@ -56,6 +56,9 @@ class ViewTestCase(TestCase):
             'employment_salary': 50000,
             'employment_pension_status': 'E',
         })
+        # Check if the response is a redirect (302) or print form errors
+        if response.status_code == 200:
+            print(response.context['form'].errors)
         self.assertEqual(response.status_code, 302)
 
     # Invalid views
