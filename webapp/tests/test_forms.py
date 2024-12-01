@@ -66,7 +66,7 @@ class TestForms(TestCase):
             }
         )
         self.assertFalse(form.is_valid())
-        self.assertEqual(len(form.errors), 3, form.errors)
+        self.assertEqual(len(form.errors), 4, form.errors)
 
     # Tests for UpdateCustomerForm
     def test_update_customer_form_valid_data(self):
@@ -85,7 +85,7 @@ class TestForms(TestCase):
         # Missing all fields
         form = UpdateCustomerForm(data={})
         self.assertFalse(form.is_valid())
-        self.assertEqual(len(form.errors), 5, form.errors)
+        self.assertEqual(len(form.errors), 6, form.errors)
 
     # Tests for CreateEmploymentForm
     def test_create_employment_form_valid_data(self):
@@ -112,7 +112,7 @@ class TestForms(TestCase):
             }
         )
         self.assertFalse(form.is_valid())
-        self.assertEqual(len(form.errors), 4, form.errors)
+        self.assertEqual(len(form.errors), 5, form.errors)
 
     def test_create_employment_form_invalid_salary(self):
         # Invalid salary data type
@@ -132,4 +132,4 @@ class TestForms(TestCase):
         # Completely empty form
         form = CreateEmploymentForm(data={})
         self.assertFalse(form.is_valid())
-        self.assertEqual(len(form.errors), 5, form.errors)
+        self.assertEqual(len(form.errors), 6, form.errors)
