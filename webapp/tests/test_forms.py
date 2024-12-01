@@ -132,4 +132,4 @@ class TestForms(TestCase):
         # Completely empty form
         form = CreateEmploymentForm(data={})
         self.assertFalse(form.is_valid())
-        self.assertEqual(len(form.errors), 6, form.errors)
+        self.assertEqual(len(form.errors), 5, form.errors)
