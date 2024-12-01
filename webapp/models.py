@@ -98,14 +98,17 @@ class employment_details(models.Model):
         return f"{self.employment_employer} - {self.employment_job_title}"
 
     def clean(self):
+        errors = {}
         if self.employment_industry not in dict(self.INDUSTRY_CHOICES):
-            raise ValidationError(f"Invalid industry: {self.employment_industry}")
+            errors['employment_industry'] = f"Invalid industry: {self.employment_industry}"
         if self.employment_job_title not in dict(self.JOB_TITLE_CHOICES):
-            raise ValidationError(f"Invalid job title: {self.employment_job_title}")
+            errors['employment_job_title'] = f"Invalid job title: {self.employment_job_title}"
         if self.employment_pension_status not in dict(self.PENSION_STATUS_CHOICES):
-            raise ValidationError(f"Invalid pension status: {self.employment_pension_status}")
+            errors['employment_pension_status'] = f"Invalid pension status: {self.employment_pension_status}"
         if not self.employment_employer:
-            raise ValidationError("Employer is required.")
+            errors['employment_employer'] = "Employer is required."
         if self.employment_salary is None or self.employment_salary <= 0:
-            raise ValidationError("Salary must be a positive number.")
+            errors['employment_salary'] = "Salary must be a positive number."
 
+        if errors:
+            raise ValidationError(errors)
