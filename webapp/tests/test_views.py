@@ -60,17 +60,17 @@ class ViewTestCase(TestCase):
 
     # Invalid views
     def test_invalid_customer_create_url(self):
-    # Simulate login
-    self.client.login(username='testuser', password='12345')
-    # Attempt to access a non-existent URL
-    response = self.client.get('/invalid-customer-create/')
-    # Expecting a 404 Not Found status code for the invalid URL
-    self.assertEqual(response.status_code, 404)
+        # Simulate login
+        self.client.login(username='testuser', password='12345')
+        # Attempt to access a non-existent URL
+        response = self.client.get('/invalid-customer-create/')
+        # Expecting a 404 Not Found status code for the invalid URL
+        self.assertEqual(response.status_code, 404)
 
     def test_invalid_employment_create_url(self):
-    # Simulate login
-    self.client.login(username='testuser', password='12345')
-    # Attempt to access a non-existent URL for employment creation
-    response = self.client.get('/customer/1/invalid-employment-create/')
-    # Expecting a 404 Not Found status code for the invalid URL
-    self.assertEqual(response.status_code, 404)
+        # Simulate login
+        self.client.login(username='testuser', password='12345')
+        # Attempt to access a non-existent URL for employment creation
+        response = self.client.get('/customer/1/invalid-employment-create/')
+        # Expecting a 404 Not Found status code for the invalid URL
+        self.assertEqual(response.status_code, 404)
