@@ -43,8 +43,8 @@ class CreateEmploymentForm(forms.ModelForm):
 
     def clean_employment_salary(self):
         salary = self.cleaned_data.get('employment_salary')
-        if salary is None or not isinstance(salary, (int, float)):
-            raise forms.ValidationError("Salary must be a positive number.")
-        if salary <= 0:
+        if salary is None:
+            raise forms.ValidationError("Salary must be provided.")
+        if not isinstance(salary, (int, float)) or salary <= 0:
             raise forms.ValidationError("Salary must be a positive number.")
         return salary
