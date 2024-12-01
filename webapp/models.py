@@ -19,7 +19,7 @@ class customer(models.Model):
         ('Leaver', 'Leaver')
     ]
 
-    customer_id = models.AutoField(primary_key=True)
+    #customer_id = models.AutoField(primary_key=True)
     customer_first_name = models.CharField(max_length=100)
     customer_last_name = models.CharField(max_length=100)
     customer_date_of_birth = models.DateField(default=date(2000, 1, 1))
