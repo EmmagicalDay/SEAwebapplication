@@ -53,7 +53,7 @@ class ViewTestCase(TestCase):
             'employment_employer': 'Test Employer',
             'employment_industry': 'IT',
             'employment_job_title': 'SE',
-            'employment_salary': 50000,
+            'employment_salary': 50000.00,
             'employment_pension_status': 'E',
         })
         # Check if the response is a redirect (302) or print form errors
