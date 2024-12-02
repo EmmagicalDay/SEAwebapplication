@@ -1,6 +1,7 @@
 from django.urls import resolve
 from django.test import SimpleTestCase
 from webapp import views
+from django.urls.exceptions import Resolver404
 
 class TestUrls(SimpleTestCase):
 
@@ -55,18 +56,9 @@ class TestUrls(SimpleTestCase):
 
     # Test for nonexistent URLs
     def test_nonexistent_url_resolves(self):
-        with self.assertRaises(Exception):
-            url = resolve('/this-url-does-not-exist')
+        with self.assertRaises(Resolver404):
+            resolve('/this-url-does-not-exist')
 
     def test_another_nonexistent_url_resolves(self):
-        with self.assertRaises(Exception):
-            url = resolve('/another-nonexistent-url')
-
-    # Test for nonexistent URLs for failure
-    def test_nonexistent_url_resolves(self):
-        url = resolve('/this-url-does-not-exist')
-        self.assertIsNotNone(url)
-
-    def test_another_nonexistent_url_resolves(self):
-        url = resolve('/another-nonexistent-url')
-        self.assertIsNotNone(url)
+        with self.assertRaises(Resolver404):
+            resolve('/another-nonexistent-url')
