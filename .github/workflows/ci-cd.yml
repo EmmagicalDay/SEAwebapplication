@@ -24,7 +24,7 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install pytest pytest-django pytest-custom-exit-code
+        pip install pytest pytest-django
         pip install -r requirements.txt
 
     - name: Set environment variables
@@ -37,4 +37,4 @@ jobs:
 
     - name: Run tests
       run: |
-        pytest
+        python run_tests.py
