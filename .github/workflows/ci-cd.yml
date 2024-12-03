@@ -4,9 +4,11 @@ on:
   push:
     branches:
       - main
+      - security-updates
   pull_request:
     branches:
       - main
+      - security-updates
 
 jobs:
   build:
