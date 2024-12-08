@@ -38,8 +38,6 @@ def login(request):
                 auth.login(request, user)
                 messages.success(request, 'Logged in successfully')
                 return redirect("user-dashboard")
-            else:
-                messages.error(request, 'Invalid login details')
     context = {'form':form}
     return render(request, 'webapp/user-login.html', context=context)
 
