@@ -4,14 +4,6 @@
 
 {% block content %}
 
-{% if messages %}
-    <div>
-        {% for message in messages %}
-            <div class="alert {{ message.tags }}">{{ message }}</div>
-        {% endfor %}
-    </div>
-{% endif %}
-
 <body>
 
     <div class="container bg-light shadow-md p-5 .form-style">
