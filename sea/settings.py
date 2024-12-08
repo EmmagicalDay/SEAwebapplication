@@ -65,10 +65,10 @@ X_FRAME_OPTIONS = 'DENY'
 
 # CSP SETTINGS
 CSP_DEFAULT_SRC = ("'self'",)
-CSP_STYLE_SRC = ("'self'", 'https://bootswatch.com', 'https://cdnjs.cloudflare.com')
+CSP_STYLE_SRC = ("'self'", 'https://bootswatch.com', 'https://cdnjs.cloudflare.com', 'https://fonts.googleapis.com')
 CSP_SCRIPT_SRC = ("'self'", 'https://code.jquery.com', 'https://cdn.jsdelivr.net')
-CSP_FONT_SRC = ("'self'", 'https://cdnjs.cloudflare.com')
-CSP_IMG_SRC = ("'self'", 'data:')
+CSP_FONT_SRC = ("'self'", 'https://cdnjs.cloudflare.com', 'https://fonts.gstatic.com')
+CSP_IMG_SRC = ("'self'", 'data:', 'blob:')
 
 # PP SETTINGS
 PERMISSIONS_POLICY = {
