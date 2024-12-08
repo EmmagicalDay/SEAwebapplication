@@ -40,7 +40,9 @@ def login(request):
                 return redirect("user-dashboard")
             else:
                 messages.error(request, 'Invalid login details')
-    context = {'form':form}
+        else:
+            messages.error(request, 'Invalid form submission')
+    context = {'form': form}
     return render(request, 'webapp/user-login.html', context=context)
 
 
