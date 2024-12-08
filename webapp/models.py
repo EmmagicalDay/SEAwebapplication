@@ -110,3 +110,13 @@ class employment_details(models.Model):
 
         if errors:
             raise ValidationError(errors)
+
+# models.py
+
+from django.contrib.auth.models import User
+from django.db import models
+
+class FailedLoginAttempt(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    attempts = models.IntegerField(default=0)
+    last_attempt = models.DateTimeField(auto_now_add=True)
