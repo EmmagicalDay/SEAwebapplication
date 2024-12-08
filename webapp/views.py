@@ -35,9 +35,23 @@ def login(request):
             password = request.POST.get('password')
             user = authenticate(request, username=username, password=password)
             if user is not None:
+                # Reset failed attempts on successful login
+                FailedLoginAttempt.objects.filter(user=user).delete()
                 auth.login(request, user)
                 messages.success(request, 'Logged in successfully')
                 return redirect("user-dashboard")
+            else:
+                # Handle failed login attempt
+                user = User.objects.filter(username=username).first()
+                if user:
+                    failed_attempt, created = FailedLoginAttempt.objects.get_or_create(user=user)
+                    failed_attempt.attempts += 1
+                    failed_attempt.last_attempt = now()
+                    failed_attempt.save()
+                    if failed_attempt.attempts >= 3:
+                        messages.error(request, 'Your account is locked. Please contact administrators.')
+                    else:
+                        messages.error(request, f'Invalid login details. Attempt {failed_attempt.attempts}/3.')
         else:
             messages.error(request, 'Invalid login details')
     context = {'form': form}
