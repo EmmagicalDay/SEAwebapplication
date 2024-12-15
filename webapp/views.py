@@ -27,7 +27,7 @@ def register(request):
             user = form.save()
             TOTPDevice.objects.create(user=user, name="default")
             messages.success(request, 'Account created successfully. Please set up your OTP device.')
-            return redirect('user-login')
+            return redirect('otp_setup')
     context = {'registerForm': form}
     return render(request, 'webapp/user-register.html', context=context)
 
