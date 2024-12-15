@@ -5,12 +5,12 @@ on:
     branches:
       - main
       - security-updates
-      - security-update2
+      - security-updates2
   pull_request:
     branches:
       - main
       - security-updates
-      - security-update2
+      - security-updates2
 
 jobs:
   build:
