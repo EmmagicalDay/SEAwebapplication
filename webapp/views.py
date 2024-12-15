@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from .forms import CreateUserForm, LoginForm, CreateCustomerForm, UpdateCustomerForm, CreateEmploymentForm
 from django.contrib.auth.models import auth
-from django.contrib.auth import authenticate
+from django.contrib.auth import authenticate, login as auth_login
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from .models import customer, employment_details
@@ -11,7 +11,6 @@ from django_otp.plugins.otp_totp.models import TOTPDevice
 import qrcode
 from io import BytesIO
 import base64
-
 
 # Create your views here.
 
