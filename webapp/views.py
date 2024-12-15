@@ -21,8 +21,9 @@ def register(request):
     if request.method == 'POST':
         form = CreateUserForm(request.POST)
         if form.is_valid():
-            form.save()
-            messages.success(request, 'Account created successfully')
+            user = form.save()
+            TOTPDevice.objects.create(user=user, name="default")
+            messages.success(request, 'Account created successfully. Please set up your OTP device.')
             return redirect('user-login')
     context = {'registerForm': form}
     return render(request, 'webapp/user-register.html', context=context)
