@@ -63,11 +63,13 @@ def login(request):
             if user is not None:
                 auth_login(request, user)
                 
-                # OTP verification
+                # Check if the user has an OTP device
                 device = TOTPDevice.objects.filter(user=user).first()
                 if device is None:
-                    device = TOTPDevice.objects.create(user=user, name="default")
+                    # Redirect to OTP setup if no device exists
+                    return redirect('otp-setup')
                 
+                # Otherwise, proceed to OTP verification
                 request.session['otp_device_id'] = device.persistent_id
                 return redirect('otp-verify')
             else:
@@ -75,6 +77,7 @@ def login(request):
     
     context = {'form': form}
     return render(request, 'webapp/user-login.html', context=context)
+
 
 @otp_required
 def otpVerify(request):
