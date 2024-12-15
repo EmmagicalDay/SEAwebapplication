@@ -25,6 +25,7 @@ urlpatterns = [
     path('customer/<int:pk>/employment/read/', views.readEmployment, name="employment-read"),
     # DELETE EMPLOYMENT DETAILS
     path('employment/<int:pk>/employment/delete/', views.deleteEmployment, name="employment-delete"),
-
+    # OTP verification path
+    path('otp-verify/', views.otp_verify, name='otp_verify'),
     
 ] 
