@@ -27,7 +27,7 @@ def register(request):
             user = form.save()
             TOTPDevice.objects.create(user=user, name="default")
             messages.success(request, 'Account created successfully. Please set up your OTP device.')
-            return redirect('otp_setup')
+            return redirect('otp-setup')
     context = {'registerForm': form}
     return render(request, 'webapp/user-register.html', context=context)
 
@@ -70,7 +70,7 @@ def login(request):
                     device = TOTPDevice.objects.create(user=user, name="default")
                 
                 request.session['otp_device_id'] = device.persistent_id
-                return redirect('otp_verify')
+                return redirect('otp-verify')
             else:
                 messages.error(request, 'Invalid credentials')
     
