@@ -6,6 +6,8 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from .models import customer, employment_details
 from django.urls import reverse
+from django_otp.decorators import otp_required
+from django_otp.plugins.otp_totp.models import TOTPDevice
 
 
 # Create your views here.
@@ -35,13 +37,33 @@ def login(request):
             password = request.POST.get('password')
             user = authenticate(request, username=username, password=password)
             if user is not None:
-                auth.login(request, user)
-                messages.success(request, 'Logged in successfully')
-                return redirect("user-dashboard")
-        else:
-            messages.error(request, 'Invalid login details')
+                auth_login(request, user)
+                
+                # OTP verification
+                device = TOTPDevice.objects.filter(user=user).first()
+                if device is None:
+                    device = TOTPDevice.objects.create(user=user, name="default")
+                
+                request.session['otp_device_id'] = device.persistent_id
+                return redirect('otp_verify')
+            else:
+                messages.error(request, 'Invalid credentials')
+    
     context = {'form': form}
     return render(request, 'webapp/user-login.html', context=context)
+
+@otp_required
+def otp_verify(request):
+    if request.method == 'POST':
+        otp_code = request.POST.get('otp_code')
+        device_id = request.session.get('otp_device_id')
+        device = TOTPDevice.from_persistent_id(device_id)
+        if device.verify_token(otp_code):
+            return redirect('user-dashboard')
+        else:
+            messages.error(request, 'Invalid OTP code')
+    
+    return render(request, 'webapp/otp-verify.html')
 
 
 # User logout
