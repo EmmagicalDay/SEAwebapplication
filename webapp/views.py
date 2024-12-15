@@ -8,6 +8,9 @@ from .models import customer, employment_details
 from django.urls import reverse
 from django_otp.decorators import otp_required
 from django_otp.plugins.otp_totp.models import TOTPDevice
+import qrcode
+from io import BytesIO
+import base64
 
 
 # Create your views here.
@@ -27,6 +30,27 @@ def register(request):
             return redirect('user-login')
     context = {'registerForm': form}
     return render(request, 'webapp/user-register.html', context=context)
+
+# Set up OTP
+@login_required
+def otp_setup(request):
+    user = request.user
+    device = TOTPDevice.objects.filter(user=user).first()
+    if not device:
+        device = TOTPDevice.objects.create(user=user, name="default")
+
+    # Generate OTP QR code
+    otp_uri = device.config_url
+    qr = qrcode.make(otp_uri)
+    buffer = BytesIO()
+    qr.save(buffer, format="PNG")
+    img_str = base64.b64encode(buffer.getvalue()).decode()
+
+    context = {
+        'qr_code': img_str,
+        'otp_uri': otp_uri,
+    }
+    return render(request, 'webapp/otp-setup.html', context)
 
 # User login
 def login(request):
