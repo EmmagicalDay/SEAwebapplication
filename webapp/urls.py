@@ -9,6 +9,10 @@ urlpatterns = [
     path('register', views.register, name="register"),
     path('user-login', views.login, name="user-login"),
     path('user-logout', views.logout, name="user-logout"),
+    # OTP SET UP
+    path('otp-setup', views.otpSetup, name="otp-setup"), 
+    # OTP VERIFICATION
+    path('otp-verify', views.otpVerify, name="otp-verify"),
     # READ MULTIPLE CUSTOMERS
     path('user-dashboard', views.dashboard, name="user-dashboard"),
     # CREATE CUSTOMER
@@ -25,9 +29,5 @@ urlpatterns = [
     path('customer/<int:pk>/employment/read/', views.readEmployment, name="employment-read"),
     # DELETE EMPLOYMENT DETAILS
     path('employment/<int:pk>/employment/delete/', views.deleteEmployment, name="employment-delete"),
-    # OTP SET UP
-    path('otp-setup/', views.otp_setup, name='otp_setup'), 
-    # OTP VERIFICATION
-    path('otp-verify/', views.otp_verify, name='otp_verify'),
     
 ] 
