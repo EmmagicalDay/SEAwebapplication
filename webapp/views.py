@@ -33,7 +33,7 @@ def register(request):
 
 # Set up OTP
 @login_required
-def otp_setup(request):
+def otpSetup(request):
     user = request.user
     device = TOTPDevice.objects.filter(user=user).first()
     if not device:
@@ -78,7 +78,7 @@ def login(request):
     return render(request, 'webapp/user-login.html', context=context)
 
 @otp_required
-def otp_verify(request):
+def otpVerify(request):
     if request.method == 'POST':
         otp_code = request.POST.get('otp_code')
         device_id = request.session.get('otp_device_id')
