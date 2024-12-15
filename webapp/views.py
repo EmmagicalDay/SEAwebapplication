@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from .forms import CreateUserForm, LoginForm, CreateCustomerForm, UpdateCustomerForm, CreateEmploymentForm
 from django.contrib.auth.models import auth
-from django.contrib.auth import authenticate, login as auth_login
+from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from .models import customer, employment_details
@@ -92,7 +92,7 @@ def otpVerify(request):
 
 # User logout
 def logout(request):
-    auth.logout(request)
+    auth_logout(request)
     messages.success(request, 'Logged out successfully')
     return redirect('user-login')
 
