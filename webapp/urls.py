@@ -6,13 +6,13 @@ from . import views
 urlpatterns = [
 
     path('', views.home, name=""),
-    path('register', views.register, name="register"),
-    path('user-login', views.login, name="user-login"),
-    path('user-logout', views.logout, name="user-logout"),
+    path('register/', views.register, name="register"),
+    path('user-login/', views.login, name="user-login"),
+    path('user-logout/', views.logout, name="user-logout"),
     # OTP SET UP
-    path('otp-setup', views.otpSetup, name="otp-setup"), 
+    path('otp-setup/', views.otpSetup, name="otp-setup"), 
     # OTP VERIFICATION
-    path('otp-verify', views.otpVerify, name="otp-verify"),
+    path('otp-verify/', views.otpVerify, name="otp-verify"),
     # READ MULTIPLE CUSTOMERS
     path('user-dashboard', views.dashboard, name="user-dashboard"),
     # CREATE CUSTOMER
