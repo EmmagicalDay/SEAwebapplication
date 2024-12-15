@@ -1,0 +1,11 @@
+{% extends 'webapp/base.html' %}
+
+{% block content %}
+    <h2>OTP Verification</h2>
+    <form method="POST">
+        {% csrf_token %}
+        <label for="otp_code">OTP Code:</label>
+        <input type="text" name="otp_code" id="otp_code" required>
+        <button type="submit">Verify</button>
+    </form>
+{% endblock %}
