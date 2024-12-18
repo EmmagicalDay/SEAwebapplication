@@ -6,14 +6,13 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from .models import customer, employment_details
 from django.urls import reverse
-from django_otp.decorators import otp_required
-from django_otp.plugins.otp_totp.models import TOTPDevice
-import qrcode
-from io import BytesIO
-import base64
+from django_otp.decorators import otp_required  # OTP-related: This decorator is used to ensure OTP verification for protected views
+from django_otp.plugins.otp_totp.models import TOTPDevice  # OTP-related: This model is used to create and manage OTP devices for users
+import qrcode  # OTP-related: This library is used to generate QR codes for OTP device setup
+from io import BytesIO  # OTP-related: Used for handling the image buffer of the QR code
+import base64  # OTP-related: Encodes the QR code image to base64 for embedding in the template
 
-# Create views here.
-
+# Home page
 def home(request):
     return render(request, 'webapp/index.html')
 
@@ -24,25 +23,26 @@ def register(request):
         form = CreateUserForm(request.POST)
         if form.is_valid():
             user = form.save()
-            # Create OTP device on registration
+            # OTP-related change: Create OTP device for the user upon registration
             TOTPDevice.objects.create(user=user, name="default")
             messages.success(request, 'Account created successfully. Please set up your OTP device.')
             auth_login(request, user)  # Log in the user so they can set up OTP
-            # Initialize otp_verified flag in session
+            # Initialize otp_verified flag in session to track if OTP is verified
             request.session['otp_verified'] = False
-            return redirect('otp-setup')
+            return redirect('otp-setup')  # Redirect to OTP setup page after registration
     context = {'registerForm': form}
     return render(request, 'webapp/user-register.html', context=context)
 
-# Set up OTP
+# OTP setup
 @login_required
 def otpSetup(request):
     user = request.user
+    # OTP-related change: Retrieve or create OTP device for the user
     device = TOTPDevice.objects.filter(user=user).first()
     if not device:
         device = TOTPDevice.objects.create(user=user, name="default")
 
-    # Generate OTP QR code
+    # Generate OTP QR code for the user to scan with their authenticator app
     otp_uri = device.config_url
     qr = qrcode.make(otp_uri)
     buffer = BytesIO()
@@ -67,15 +67,15 @@ def login(request):
             if user is not None:
                 auth_login(request, user)
 
-                # Fetch or create an OTP device for the user
+                # OTP-related change: Check if the user has an OTP device after successful login
                 device = TOTPDevice.objects.filter(user=user).first()
                 if not device:
                     messages.error(request, 'No OTP device found. Redirecting to setup.')
-                    return redirect('otp-setup')
+                    return redirect('otp-setup')  # Redirect to OTP setup page if no device is found
                 
-                # Save the device ID in the session
+                # Save the OTP device ID in session for later OTP verification
                 request.session['otp_device_id'] = device.persistent_id
-                return redirect('otp-verify')
+                return redirect('otp-verify')  # Redirect to OTP verification page
             else:
                 messages.error(request, 'Invalid credentials')
     context = {'form': form}
@@ -87,31 +87,31 @@ def otpVerify(request):
     device_id = request.session.get('otp_device_id')
     if not device_id:
         messages.error(request, 'No OTP device found in the session. Please set up OTP.')
-        return redirect('otp-setup')
+        return redirect('otp-setup')  # Redirect if no OTP device in session
     
     try:
-        device = TOTPDevice.from_persistent_id(device_id)
+        device = TOTPDevice.from_persistent_id(device_id)  # Retrieve the OTP device using the device ID from session
     except TOTPDevice.DoesNotExist:
         messages.error(request, 'OTP device not found. Please set up OTP again.')
         return redirect('otp-setup')
 
     if request.method == 'POST':
         otp_code = request.POST.get('otp_code')
-        if device.verify_token(otp_code):
-            request.session['otp_verified'] = True  # Mark OTP as verified
+        if device.verify_token(otp_code):  # Verify the OTP code entered by the user
+            request.session['otp_verified'] = True  # Mark OTP as verified in the session
             messages.success(request, 'OTP verified successfully.')
-            return redirect('user-dashboard')
+            return redirect('user-dashboard')  # Redirect to dashboard after successful OTP verification
         else:
             messages.error(request, 'Invalid OTP code. Please try again.')
     
     return render(request, 'webapp/otp-verify.html')
 
-# Custom decorator to check OTP verification
+# Custom decorator to ensure that only OTP-verified users can access certain views
 def otp_verified_only(view_func):
     @login_required(login_url='user-login')
     def _wrapped_view(request, *args, **kwargs):
-        if not request.session.get('otp_verified', False):
-            return redirect('otp-verify')  # Force OTP verification if not verified
+        if not request.session.get('otp_verified', False):  # Check if OTP is verified in session
+            return redirect('otp-verify')  # Redirect to OTP verification if not verified
         return view_func(request, *args, **kwargs)
     return _wrapped_view
 
@@ -128,7 +128,7 @@ def dashboard(request):
     context = {'customer_data': customer_data}
     return render(request, 'webapp/user-dashboard.html', context=context)
 
-# Create a new customer - Protected by OTP verification
+# Create customer - Protected by OTP verification
 @otp_verified_only
 def createCustomer(request):
     form = CreateCustomerForm()
@@ -141,7 +141,7 @@ def createCustomer(request):
     context = {'form': form}
     return render(request, 'webapp/customer-create.html', context=context)
 
-# Update a customer - Protected by OTP verification
+# Update customer - Protected by OTP verification
 @otp_verified_only
 def updateCustomer(request, pk):
     customer_data = customer.objects.get(id=pk)
@@ -151,23 +151,23 @@ def updateCustomer(request, pk):
         if form.is_valid():
             form.save()
             messages.success(request, 'Customer updated successfully')
-            return redirect('customer-read', pk=pk)  # Redirect to the customer's details page
+            return redirect('customer-read', pk=pk)  # Redirect to customer's details page after update
     context = {'form': form}
     return render(request, 'webapp/customer-update.html', context=context)
 
-# Read single customer - Protected by OTP verification
+# Read customer - Protected by OTP verification
 @otp_verified_only
 def readCustomer(request, pk):
     all_records = customer.objects.get(id=pk)
     context = {'customer': all_records}
     return render(request, 'webapp/customer-read.html', context=context)
 
-# Delete a customer - Protected by OTP verification
+# Delete customer - Protected by OTP verification
 @otp_verified_only
 def deleteCustomer(request, pk):
     if not request.user.is_superuser:
         messages.error(request, 'Only superusers can delete customers.')
-        return redirect('customer-read', pk=pk)  # Redirect to the customer's details page
+        return redirect('customer-read', pk=pk)  # Redirect to customer's details page if not superuser
 
     customer_data = customer.objects.get(id=pk)
     customer_data.delete()
@@ -186,7 +186,7 @@ def createEmployment(request, pk):
             employment_data.customer = customer_data
             employment_data.save()
             messages.success(request, 'Employment details created successfully')
-            return redirect('employment-read', pk=customer_data.id)  # Use customer_data.id instead of customer_id
+            return redirect('employment-read', pk=customer_data.id)  # Redirect to employment details page
     context = {'form': form}
     return render(request, 'webapp/employment-create.html', context=context)
 
@@ -203,9 +203,9 @@ def readEmployment(request, pk):
 def deleteEmployment(request, pk):
     employment_data = employment_details.objects.get(employment_id=pk)
     if request.method == 'POST':
-        customer_id = employment_data.customer.id  # Get the customer's id
+        customer_id = employment_data.customer.id  # Get customer's ID for redirection after delete
         employment_data.delete()
         messages.success(request, 'Employment details deleted successfully')
-        return redirect('employment-read', pk=customer_id)  # Pass the customer's id to the redirect
+        return redirect('employment-read', pk=customer_id)  # Redirect to employment details page after deletion
     context = {'item': employment_data}
     return render(request, 'webapp/employment-delete.html', context=context)
