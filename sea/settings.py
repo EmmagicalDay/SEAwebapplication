@@ -19,19 +19,22 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
+# SECURITY UPDATE 3:  identified security issues by running the command python manage.py check --deploy
 # SECURITY WARNING: keep the secret key used in production secret!
-# SECURITY UPDATE 3: insecure key
-# SECRET_KEY = 'django-insecure-1+38pky@f2=bu-+(8smk2bdz#n5lg2jkr14(^g%1d0wt2j&ofm'
-SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'default-secret-key')
-
+# Retrieve the SECRET_KEY from environment variables.
+# This ensures that the secret key is not exposed in the codebase.
+SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'default-secret-key')  # Make sure to set this in Heroku config vars
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+# Retrieve the DEBUG setting from environment variables.
+# This helps to ensure that detailed error pages are not shown in production.
+DEBUG = os.environ.get('DJANGO_DEBUG', '') != 'False'
 
-ALLOWED_HOSTS = ['*']
+# Retrieve the allowed hosts from environment variables.
+# This specifies which hosts the application can serve.
+ALLOWED_HOSTS = os.environ.get('DJANGO_ALLOWED_HOSTS', '*').split(',')
 
 # Application definition
-
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -63,21 +66,21 @@ MIDDLEWARE = [
     'django_permissions_policy.PermissionsPolicyMiddleware',
 ]
 
-# SECURITY UPDATES 1
+# SECURITY UPDATES 1: Security middleware settings
 SECURE_CONTENT_TYPE_NOSNIFF = True
 SECURE_HSTS_SECONDS = 31536000  # 1 year
 SECURE_HSTS_INCLUDE_SUBDOMAINS = True
 SECURE_HSTS_PRELOAD = True
 X_FRAME_OPTIONS = 'DENY'
 
-# CSP SETTINGS
+# SECURITY UPDATES 1: Content Security Policy (CSP) settings
 CSP_DEFAULT_SRC = ("'self'",)
 CSP_STYLE_SRC = ("'self'", 'https://bootswatch.com', 'https://cdnjs.cloudflare.com', 'https://fonts.googleapis.com')
 CSP_SCRIPT_SRC = ("'self'", 'https://code.jquery.com', 'https://cdn.jsdelivr.net')
 CSP_FONT_SRC = ("'self'", 'https://cdnjs.cloudflare.com', 'https://fonts.gstatic.com')
 CSP_IMG_SRC = ("'self'", 'data:', 'blob:')
 
-# PP SETTINGS
+# SECURITY UPDATES 1: Permissions Policy settings
 PERMISSIONS_POLICY = {
     "accelerometer": [],
     "autoplay": [],
@@ -95,15 +98,16 @@ PERMISSIONS_POLICY = {
     "usb": [],
 }
 
-ROOT_URLCONF = 'sea.urls'
-
-# SECURITY UPDATES 2: Session engines for OTP
+# SECURITY UPDATES 2: Session management settings
 SESSION_ENGINE = 'django.contrib.sessions.backends.db'  # Use database-backed sessions
 SESSION_COOKIE_SECURE = True  # Secure cookies in production
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
+# SECURITY UPDATE 3: CSRF and SSL settings
+CSRF_COOKIE_SECURE = True  # Ensure CSRF cookies are sent over HTTPS.
+SECURE_SSL_REDIRECT = True  # Redirect all HTTP requests to HTTPS.
 
-
+ROOT_URLCONF = 'sea.urls'
 
 TEMPLATES = [
     {
@@ -125,7 +129,6 @@ WSGI_APPLICATION = 'sea.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -135,7 +138,6 @@ DATABASES = {
 
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
-
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
@@ -153,28 +155,21 @@ AUTH_PASSWORD_VALIDATORS = [
 
 # Internationalization
 # https://docs.djangoproject.com/en/5.0/topics/i18n/
-
 LANGUAGE_CODE = 'en-us'
-
 TIME_ZONE = 'UTC'
-
 USE_I18N = True
-
 USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
-
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATIC_URL = '/static/'
-
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static')
 ]
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
-
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Test runner
