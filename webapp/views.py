@@ -10,6 +10,7 @@ from django_otp.decorators import otp_required
 from django_otp.plugins.otp_totp.models import TOTPDevice
 import qrcode
 from io import BytesIO
+import base64
 
 # Create views here.
 
