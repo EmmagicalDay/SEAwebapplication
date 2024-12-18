@@ -1,26 +1,26 @@
-name: "CodeQL"
+name: "CodeQL Analysis"
 
 on:
   push:
-    branches: ['*']
+    branches:
+      - main
+      - security-updates3
   pull_request:
-    branches: ['*']
+    branches:
+      - main
+      - security-updates3
   schedule:
-    - cron: '0 0 * * *'
+    - cron: '00:00' # Runs daily at midnight
 
 jobs:
   analyze:
-    name: Analyze
+    name: Analyze Code with CodeQL
     runs-on: ubuntu-latest
+
     permissions:
       actions: read
-      security-events: write
       contents: read
-
-    strategy:
-      fail-fast: false
-      matrix:
-        language: [ 'python' ]
+      security-events: write
 
     steps:
     - name: Checkout repository
@@ -29,12 +29,10 @@ jobs:
     - name: Initialize CodeQL
       uses: github/codeql-action/init@v2
       with:
-        languages: ${{ matrix.language }}
+        languages: python
 
     - name: Autobuild
       uses: github/codeql-action/autobuild@v2
 
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v2
-      with:
-        category: "advanced-config"  # Add this to specify advanced configuration
