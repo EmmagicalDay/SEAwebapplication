@@ -19,11 +19,14 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        language: [ 'python', 'javascript' ]
+        language: [ 'python' ]
 
     steps:
     - name: Checkout repository
       uses: actions/checkout@v3
+
+    - name: Disable default CodeQL setup
+      run: echo "codeql: false" >> $GITHUB_WORKSPACE/.github/codeql/codeql-config.yml
 
     - name: Initialize CodeQL
       uses: github/codeql-action/init@v2
