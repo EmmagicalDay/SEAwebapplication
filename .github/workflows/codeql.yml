@@ -10,7 +10,7 @@ on:
       - main
       - security-updates3
   schedule:
-    - cron: '00:00' # Runs daily at midnight
+    - cron: '0 0 * * *' # Runs daily at midnight UTC
 
 jobs:
   analyze:
