@@ -1,28 +1,26 @@
-name: "CodeQL"
+name: "CodeQL Analysis"
 
 on:
   push:
-    branches: ['*']
+    branches:
+      - main
+      - security-updates3
   pull_request:
-    # The branches below must be a subset of the branches above
-    branches: ['*']
+    branches:
+      - main
+      - security-updates3
   schedule:
-    - cron: '0 0 * * *'
+    - cron: '0 0 * * *' # Runs daily at midnight UTC
 
 jobs:
   analyze:
-    name: Analyze
+    name: Analyze Code with CodeQL
     runs-on: ubuntu-latest
+
     permissions:
       actions: read
+      contents: read
       security-events: write
-
-    strategy:
-      fail-fast: false
-      matrix:
-        language: [ 'python', 'javascript' ]
-        # CodeQL supports [ 'cpp', 'csharp', 'go', 'java', 'javascript', 'typescript', 'python', 'ruby' ]
-        # Learn more about CodeQL language support at https://aka.ms/codeql-docs/language-support
 
     steps:
     - name: Checkout repository
@@ -31,7 +29,7 @@ jobs:
     - name: Initialize CodeQL
       uses: github/codeql-action/init@v2
       with:
-        languages: ${{ matrix.language }}
+        languages: python
 
     - name: Autobuild
       uses: github/codeql-action/autobuild@v2
