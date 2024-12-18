@@ -4,7 +4,6 @@ on:
   push:
     branches: ['*']
   pull_request:
-    # The branches below must be a subset of the branches above
     branches: ['*']
   schedule:
     - cron: '0 0 * * *'
@@ -21,8 +20,6 @@ jobs:
       fail-fast: false
       matrix:
         language: [ 'python', 'javascript' ]
-        # CodeQL supports [ 'cpp', 'csharp', 'go', 'java', 'javascript', 'typescript', 'python', 'ruby' ]
-        # Learn more about CodeQL language support at https://aka.ms/codeql-docs/language-support
 
     steps:
     - name: Checkout repository
@@ -38,3 +35,6 @@ jobs:
 
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v2
+
+    - name: Cleanup workspace
+      run: rm -rf /home/runner/work/_temp/codeql_databases
