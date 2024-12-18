@@ -64,11 +64,13 @@ def login(request):
             if user is not None:
                 auth_login(request, user)
 
-                # Check if the user has an OTP device
+                # Fetch or create an OTP device for the user
                 device = TOTPDevice.objects.filter(user=user).first()
                 if not device:
+                    messages.error(request, 'No OTP device found. Redirecting to setup.')
                     return redirect('otp-setup')
                 
+                # Save the device ID in the session
                 request.session['otp_device_id'] = device.persistent_id
                 return redirect('otp-verify')
             else:
@@ -80,15 +82,26 @@ def login(request):
 # OTP Verification
 @login_required
 def otpVerify(request):
+    device_id = request.session.get('otp_device_id')
+    if not device_id:
+        messages.error(request, 'No OTP device found in the session. Please set up OTP.')
+        return redirect('otp-setup')
+    
+    try:
+        device = TOTPDevice.from_persistent_id(device_id)
+    except TOTPDevice.DoesNotExist:
+        messages.error(request, 'OTP device not found. Please set up OTP again.')
+        return redirect('otp-setup')
+
     if request.method == 'POST':
         otp_code = request.POST.get('otp_code')
-        device_id = request.session.get('otp_device_id')
-        device = TOTPDevice.from_persistent_id(device_id)
         if device.verify_token(otp_code):
-            request.session['otp_verified'] = True  # Mark the session as OTP-verified
+            request.session['otp_verified'] = True
+            messages.success(request, 'OTP verified successfully.')
             return redirect('user-dashboard')
         else:
-            messages.error(request, 'Invalid OTP code')
+            messages.error(request, 'Invalid OTP code. Please try again.')
+    
     return render(request, 'webapp/otp-verify.html')
 
 # Restrict access to OTP-verified users
