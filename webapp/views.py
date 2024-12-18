@@ -24,9 +24,12 @@ def register(request):
         form = CreateUserForm(request.POST)
         if form.is_valid():
             user = form.save()
+            # Create OTP device on registration
             TOTPDevice.objects.create(user=user, name="default")
             messages.success(request, 'Account created successfully. Please set up your OTP device.')
             auth_login(request, user)  # Log in the user so they can set up OTP
+            # Initialize otp_verified flag in session
+            request.session['otp_verified'] = False
             return redirect('otp-setup')
     context = {'registerForm': form}
     return render(request, 'webapp/user-register.html', context=context)
@@ -96,7 +99,7 @@ def otpVerify(request):
     if request.method == 'POST':
         otp_code = request.POST.get('otp_code')
         if device.verify_token(otp_code):
-            request.session['otp_verified'] = True
+            request.session['otp_verified'] = True  # Mark the OTP as verified
             messages.success(request, 'OTP verified successfully.')
             return redirect('user-dashboard')
         else:
@@ -104,13 +107,13 @@ def otpVerify(request):
     
     return render(request, 'webapp/otp-verify.html')
 
+
 # Restrict access to OTP-verified users
 def otp_verified_only(view_func):
     @login_required(login_url='user-login')
-    @otp_required
     def _wrapped_view(request, *args, **kwargs):
         if not request.session.get('otp_verified'):
-            return redirect('otp-verify')
+            return redirect('otp-verify')  # Force OTP verification if not verified
         return view_func(request, *args, **kwargs)
     return _wrapped_view
 
@@ -203,7 +206,7 @@ def readEmployment(request, pk):
     employment_data = employment_details.objects.filter(customer=customer_data)
     context = {'employment_data': employment_data, 'customer': customer_data}
     return render(request, 'webapp/employment-read.html', context=context)
- 
+
 # Delete employment details
 # Only logged in users can access this page
 @otp_required
@@ -216,5 +219,3 @@ def deleteEmployment(request, pk):
         return redirect('employment-read', pk=customer_id)  # Pass the customer's id to the redirect
     context = {'item': employment_data}
     return render(request, 'webapp/employment-delete.html', context=context)
-
-
