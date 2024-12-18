@@ -1,15 +1,17 @@
 from django.shortcuts import render, redirect
 from .forms import CreateUserForm, LoginForm, CreateCustomerForm, UpdateCustomerForm, CreateEmploymentForm
+from django.contrib.auth.models import auth
 from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from .models import customer, employment_details
+from django.urls import reverse
+from django_otp.decorators import otp_required
 from django_otp.plugins.otp_totp.models import TOTPDevice
 import qrcode
 from io import BytesIO
-import base64
 
-# Create your views here.
+# Create views here.
 
 def home(request):
     return render(request, 'webapp/index.html')
