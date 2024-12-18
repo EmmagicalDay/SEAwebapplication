@@ -15,7 +15,7 @@ jobs:
     permissions:
       actions: read
       security-events: write
-      contents: read  # Ensure this permission is set
+      contents: read
 
     strategy:
       fail-fast: false
