@@ -26,6 +26,7 @@ def register(request):
             user = form.save()
             TOTPDevice.objects.create(user=user, name="default")
             messages.success(request, 'Account created successfully. Please set up your OTP device.')
+            auth_login(request, user)  # Log in the user so they can set up OTP
             return redirect('otp-setup')
     context = {'registerForm': form}
     return render(request, 'webapp/user-register.html', context=context)
@@ -62,36 +63,43 @@ def login(request):
             user = authenticate(request, username=username, password=password)
             if user is not None:
                 auth_login(request, user)
-                
+
                 # Check if the user has an OTP device
                 device = TOTPDevice.objects.filter(user=user).first()
-                if device is None:
-                    # Redirect to OTP setup if no device exists
+                if not device:
                     return redirect('otp-setup')
                 
-                # Otherwise, proceed to OTP verification
                 request.session['otp_device_id'] = device.persistent_id
                 return redirect('otp-verify')
             else:
                 messages.error(request, 'Invalid credentials')
-    
     context = {'form': form}
     return render(request, 'webapp/user-login.html', context=context)
 
 
-@otp_required
+# OTP Verification
+@login_required
 def otpVerify(request):
     if request.method == 'POST':
         otp_code = request.POST.get('otp_code')
         device_id = request.session.get('otp_device_id')
         device = TOTPDevice.from_persistent_id(device_id)
         if device.verify_token(otp_code):
+            request.session['otp_verified'] = True  # Mark the session as OTP-verified
             return redirect('user-dashboard')
         else:
             messages.error(request, 'Invalid OTP code')
-    
     return render(request, 'webapp/otp-verify.html')
 
+# Restrict access to OTP-verified users
+def otp_verified_only(view_func):
+    @login_required(login_url='user-login')
+    @otp_required
+    def _wrapped_view(request, *args, **kwargs):
+        if not request.session.get('otp_verified'):
+            return redirect('otp-verify')
+        return view_func(request, *args, **kwargs)
+    return _wrapped_view
 
 # User logout
 def logout(request):
@@ -101,7 +109,7 @@ def logout(request):
 
 # User Dashboard
 # Only logged in users can access this page
-@login_required(login_url='user-login')
+@otp_required
 def dashboard(request):
     customer_data = customer.objects.all()
     context = {'customer_data': customer_data}
@@ -109,7 +117,7 @@ def dashboard(request):
 
 # Create a new customer
 # Only logged in users can access this page
-@login_required(login_url='user-login')
+@otp_required
 def createCustomer(request):
     form = CreateCustomerForm()
     if request.method == 'POST':
@@ -123,7 +131,7 @@ def createCustomer(request):
 
 # Update a customer
 # Only logged in users can access this page
-@login_required(login_url='user-login')
+@otp_required
 def updateCustomer(request, pk):
     customer_data = customer.objects.get(id=pk)
     form = UpdateCustomerForm(instance=customer_data)
@@ -138,7 +146,7 @@ def updateCustomer(request, pk):
 
 # Read single customer
 # Only logged in users can access this page
-@login_required(login_url='user-login')
+@otp_required
 def readCustomer(request, pk):
     all_records = customer.objects.get(id=pk)
     context = {'customer': all_records}
@@ -146,7 +154,7 @@ def readCustomer(request, pk):
 
 # Delete a customer
 # Only superusers can delete customers
-@login_required(login_url='user-login')
+@otp_required
 def deleteCustomer(request, pk):
     if not request.user.is_superuser:
         messages.error(request, 'Only superusers can delete customers.')
@@ -159,7 +167,7 @@ def deleteCustomer(request, pk):
 
 # Create employment details
 # Only logged in users can access this page
-@login_required(login_url='user-login')
+@otp_required
 def createEmployment(request, pk):
     customer_data = customer.objects.get(id=pk)
     form = CreateEmploymentForm()
@@ -176,7 +184,7 @@ def createEmployment(request, pk):
 
 # Read employment details
 # Only logged in users can access this page
-@login_required(login_url='user-login')
+@otp_required
 def readEmployment(request, pk):
     customer_data = customer.objects.get(id=pk)
     employment_data = employment_details.objects.filter(customer=customer_data)
@@ -185,7 +193,7 @@ def readEmployment(request, pk):
  
 # Delete employment details
 # Only logged in users can access this page
-@login_required(login_url='user-login')
+@otp_required
 def deleteEmployment(request, pk):
     employment_data = employment_details.objects.get(employment_id=pk)
     if request.method == 'POST':
