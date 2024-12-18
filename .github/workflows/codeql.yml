@@ -15,6 +15,7 @@ jobs:
     permissions:
       actions: read
       security-events: write
+      contents: read  # Ensure this permission is set
 
     strategy:
       fail-fast: false
@@ -35,3 +36,5 @@ jobs:
 
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v2
+      with:
+        category: "advanced-config"  # Add this to specify advanced configuration
