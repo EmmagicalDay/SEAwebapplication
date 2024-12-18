@@ -6,11 +6,13 @@ on:
       - main
       - security-updates
       - security-updates2
+      - security-updates3
   pull_request:
     branches:
       - main
       - security-updates
       - security-updates2
+      - security-updates3
 
 jobs:
   build:
