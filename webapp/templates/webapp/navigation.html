@@ -21,7 +21,7 @@
 
       {% if user.is_authenticated %}
         {% if request.session.otp_verified %}
-          <!-- Show these options only if OTP is verified -->
+          <!-- Links for OTP-verified users -->
           <li class="nav-item">
             <a class="nav-link" href="{% url 'user-dashboard' %}">
               Dashboard &nbsp; <i class="fa fa-home" aria-hidden="true"></i>
@@ -36,15 +36,31 @@
             </a>
           </li>
         {% else %}
-          <!-- Redirect unverified users to OTP setup -->
+          <!-- Links for users yet to set up or verify OTP -->
           <li class="nav-item">
             <a class="nav-link" href="{% url 'otp-setup' %}">
-              Set Up OTP &nbsp; <i class="fa fa-key" aria-hidden="true"></i>
+              Set Up OTP &nbsp; <i class="fa fa-qrcode" aria-hidden="true"></i>
+            </a>
+          </li>
+
+          &nbsp; &nbsp; &nbsp;
+
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'otp-verify' %}">
+              Verify OTP &nbsp; <i class="fa fa-key" aria-hidden="true"></i>
+            </a>
+          </li>
+
+          &nbsp; &nbsp; &nbsp;
+
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'user-logout' %}" onclick="return confirm('Are you sure you want to log out?');">
+              Log out &nbsp; <i class="fa fa-sign-out" aria-hidden="true"></i>
             </a>
           </li>
         {% endif %}
       {% else %}
-        <!-- Links for non-authenticated users -->
+        <!-- Links for unauthenticated users -->
         <li class="nav-item">
           <a class="nav-link" href="{% url 'register' %}"> Register </a>
         </li>
