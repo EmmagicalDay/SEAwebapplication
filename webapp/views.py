@@ -1,12 +1,9 @@
 from django.shortcuts import render, redirect
 from .forms import CreateUserForm, LoginForm, CreateCustomerForm, UpdateCustomerForm, CreateEmploymentForm
-from django.contrib.auth.models import auth
 from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from .models import customer, employment_details
-from django.urls import reverse
-from django_otp.decorators import otp_required
 from django_otp.plugins.otp_totp.models import TOTPDevice
 import qrcode
 from io import BytesIO
@@ -81,7 +78,6 @@ def login(request):
     context = {'form': form}
     return render(request, 'webapp/user-login.html', context=context)
 
-
 # OTP Verification
 @login_required
 def otpVerify(request):
@@ -99,7 +95,7 @@ def otpVerify(request):
     if request.method == 'POST':
         otp_code = request.POST.get('otp_code')
         if device.verify_token(otp_code):
-            request.session['otp_verified'] = True  # Mark the OTP as verified
+            request.session['otp_verified'] = True  # Mark OTP as verified
             messages.success(request, 'OTP verified successfully.')
             return redirect('user-dashboard')
         else:
@@ -107,12 +103,11 @@ def otpVerify(request):
     
     return render(request, 'webapp/otp-verify.html')
 
-
-# Restrict access to OTP-verified users
+# Custom decorator to check OTP verification
 def otp_verified_only(view_func):
     @login_required(login_url='user-login')
     def _wrapped_view(request, *args, **kwargs):
-        if not request.session.get('otp_verified'):
+        if not request.session.get('otp_verified', False):
             return redirect('otp-verify')  # Force OTP verification if not verified
         return view_func(request, *args, **kwargs)
     return _wrapped_view
@@ -123,17 +118,15 @@ def logout(request):
     messages.success(request, 'Logged out successfully')
     return redirect('user-login')
 
-# User Dashboard
-# Only logged in users can access this page
-@otp_required
+# User Dashboard - Protected by OTP verification
+@otp_verified_only
 def dashboard(request):
     customer_data = customer.objects.all()
     context = {'customer_data': customer_data}
     return render(request, 'webapp/user-dashboard.html', context=context)
 
-# Create a new customer
-# Only logged in users can access this page
-@otp_required
+# Create a new customer - Protected by OTP verification
+@otp_verified_only
 def createCustomer(request):
     form = CreateCustomerForm()
     if request.method == 'POST':
@@ -145,9 +138,8 @@ def createCustomer(request):
     context = {'form': form}
     return render(request, 'webapp/customer-create.html', context=context)
 
-# Update a customer
-# Only logged in users can access this page
-@otp_required
+# Update a customer - Protected by OTP verification
+@otp_verified_only
 def updateCustomer(request, pk):
     customer_data = customer.objects.get(id=pk)
     form = UpdateCustomerForm(instance=customer_data)
@@ -160,17 +152,15 @@ def updateCustomer(request, pk):
     context = {'form': form}
     return render(request, 'webapp/customer-update.html', context=context)
 
-# Read single customer
-# Only logged in users can access this page
-@otp_required
+# Read single customer - Protected by OTP verification
+@otp_verified_only
 def readCustomer(request, pk):
     all_records = customer.objects.get(id=pk)
     context = {'customer': all_records}
     return render(request, 'webapp/customer-read.html', context=context)
 
-# Delete a customer
-# Only superusers can delete customers
-@otp_required
+# Delete a customer - Protected by OTP verification
+@otp_verified_only
 def deleteCustomer(request, pk):
     if not request.user.is_superuser:
         messages.error(request, 'Only superusers can delete customers.')
@@ -181,9 +171,8 @@ def deleteCustomer(request, pk):
     messages.success(request, 'Customer deleted successfully')
     return redirect('user-dashboard')
 
-# Create employment details
-# Only logged in users can access this page
-@otp_required
+# Create employment details - Protected by OTP verification
+@otp_verified_only
 def createEmployment(request, pk):
     customer_data = customer.objects.get(id=pk)
     form = CreateEmploymentForm()
@@ -198,18 +187,16 @@ def createEmployment(request, pk):
     context = {'form': form}
     return render(request, 'webapp/employment-create.html', context=context)
 
-# Read employment details
-# Only logged in users can access this page
-@otp_required
+# Read employment details - Protected by OTP verification
+@otp_verified_only
 def readEmployment(request, pk):
     customer_data = customer.objects.get(id=pk)
     employment_data = employment_details.objects.filter(customer=customer_data)
     context = {'employment_data': employment_data, 'customer': customer_data}
     return render(request, 'webapp/employment-read.html', context=context)
 
-# Delete employment details
-# Only logged in users can access this page
-@otp_required
+# Delete employment details - Protected by OTP verification
+@otp_verified_only
 def deleteEmployment(request, pk):
     employment_data = employment_details.objects.get(employment_id=pk)
     if request.method == 'POST':
