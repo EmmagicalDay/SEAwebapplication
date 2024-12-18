@@ -94,7 +94,10 @@ PERMISSIONS_POLICY = {
 
 ROOT_URLCONF = 'sea.urls'
 
-
+# Session engines for OTP
+SESSION_ENGINE = 'django.contrib.sessions.backends.db'  # Use database-backed sessions
+SESSION_COOKIE_SECURE = True  # Secure cookies in production
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
 TEMPLATES = [
     {
