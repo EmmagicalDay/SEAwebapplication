@@ -1,0 +1,13 @@
+{% extends "webapp/base.html" %}
+
+{% block content %}
+<div class="container bg-light shadow-md p-5 .form-style">
+    <h3>Set Up Your OTP Device</h3>
+    <hr>
+    <div class="text-center">
+        <img src="data:image/png;base64,{{ qr_code }}" alt="OTP QR Code">
+        <p>Scan this QR code with your OTP app</p>
+        <p>Or use this OTP URI: <code>{{ otp_uri }}</code></p>
+    </div>
+</div>
+{% endblock %}
